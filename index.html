@@ -18,6 +18,11 @@
             gap: 10px;
             max-width: 600px;
         }
+        .row {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+        }
         input {
             flex-grow: 1;
             padding: 10px;
@@ -40,31 +45,107 @@
         button:hover {
             background-color: #2980b9;
         }
+        #addRow {
+            background-color: #2ecc71;
+        }
+        #addRow:hover {
+            background-color: #27ae60;
+        }
+        #saveState, #loadState {
+            background-color: #e74c3c;
+        }
+        #saveState:hover, #loadState:hover {
+            background-color: #c0392b;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <input type="text" id="inputField" placeholder="Enter text, code, phone, email, or URL">
-        <button onclick="copyToClipboard()">Copy</button>
-        <button onclick="goToUrl()">Go</button>
+    <div class="container" id="rowContainer">
+        <div class="row">
+            <input type="text" placeholder="Enter text, code, phone, email, or URL">
+            <button onclick="copyToClipboard(this)">Copy</button>
+            <button onclick="goToUrl(this)">Go</button>
+        </div>
     </div>
+    <button id="addRow" onclick="addRow()">+</button>
+    <button id="saveState" onclick="saveState()">Save State</button>
+    <button id="loadState" onclick="loadState()">Load State</button>
 
     <script>
-        function copyToClipboard() {
-            const inputField = document.getElementById('inputField');
-            navigator.clipboard.writeText(inputField.value)
+        function copyToClipboard(button) {
+            const input = button.previousElementSibling;
+            navigator.clipboard.writeText(input.value)
                 .then(() => alert('Copied to clipboard!'))
                 .catch(err => console.error('Failed to copy: ', err));
         }
 
-        function goToUrl() {
-            const inputField = document.getElementById('inputField');
-            const url = inputField.value.trim();
-            if (url.startsWith('http://') || url.startsWith('https://')) {
-                window.open(url, '_blank');
-            } else {
-                alert('Please enter a valid URL starting with http:// or https://');
+        function goToUrl(button) {
+            const input = button.previousElementSibling.previousElementSibling;
+            let url = input.value.trim();
+            
+            if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+                input.value = url;
             }
+
+            try {
+                new URL(url);
+                window.open(url, '_blank');
+            } catch (error) {
+                alert('Please enter a valid URL');
+            }
+        }
+
+        function addRow() {
+            const container = document.getElementById('rowContainer');
+            const newRow = document.createElement('div');
+            newRow.className = 'row';
+            newRow.innerHTML = `
+                <input type="text" placeholder="Enter text, code, phone, email, or URL">
+                <button onclick="copyToClipboard(this)">Copy</button>
+                <button onclick="goToUrl(this)">Go</button>
+            `;
+            container.appendChild(newRow);
+        }
+
+        function saveState() {
+            const rows = document.querySelectorAll('.row input');
+            const state = Array.from(rows).map(input => input.value);
+            const blob = new Blob([JSON.stringify(state)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'copy-go-state.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function loadState() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = readerEvent => {
+                    const content = readerEvent.target.result;
+                    const state = JSON.parse(content);
+                    const container = document.getElementById('rowContainer');
+                    container.innerHTML = '';
+                    state.forEach(value => {
+                        const newRow = document.createElement('div');
+                        newRow.className = 'row';
+                        newRow.innerHTML = `
+                            <input type="text" value="${value}" placeholder="Enter text, code, phone, email, or URL">
+                            <button onclick="copyToClipboard(this)">Copy</button>
+                            <button onclick="goToUrl(this)">Go</button>
+                        `;
+                        container.appendChild(newRow);
+                    });
+                }
+                reader.readAsText(file);
+            }
+            input.click();
         }
     </script>
 </body>
