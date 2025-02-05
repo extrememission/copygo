@@ -22,9 +22,11 @@
             display: flex;
             width: 100%;
             gap: 10px;
+            flex-wrap: wrap;
         }
-        input {
-            flex-grow: 1;
+        input[type="text"] {
+            flex: 1 1 40%;
+            min-width: 200px;
             padding: 10px;
             font-size: 16px;
             border: none;
@@ -32,7 +34,12 @@
             background-color: #34495e;
             color: #ecf0f1;
         }
+        .note-input {
+            flex: 1 1 40%;
+            min-width: 200px;
+        }
         button {
+            flex: 0 0 auto;
             padding: 10px 15px;
             font-size: 16px;
             border: none;
@@ -56,10 +63,6 @@
         }
         #saveState:hover, #loadState:hover {
             background-color: #c0392b;
-        }
-        .note-input {
-            flex-grow: 1;
-            max-width: 150px;
         }
     </style>
 </head>
