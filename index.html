@@ -22,21 +22,18 @@
             display: flex;
             width: 100%;
             gap: 10px;
-            flex-wrap: wrap;
+            align-items: center; /* Ensures all elements are vertically aligned */
+            flex-wrap: nowrap; /* Prevents wrapping to a new line */
         }
-        input[type="text"] {
-            flex: 1 1 40%;
-            min-width: 200px;
+        input[type="text"], .note-input {
+            flex: 1 1 auto; /* Allows inputs to shrink or grow proportionally */
+            min-width: 150px; /* Adjusted minimum width to fit better */
             padding: 10px;
             font-size: 16px;
             border: none;
             border-radius: 4px;
             background-color: #34495e;
             color: #ecf0f1;
-        }
-        .note-input {
-            flex: 1 1 40%;
-            min-width: 200px;
         }
         button {
             flex: 0 0 auto;
@@ -84,7 +81,7 @@
             const input = button.previousElementSibling;
             navigator.clipboard.writeText(input.value)
                 .then(() => alert('Copied to clipboard!'))
-                .catch(err => console.error('Failed to copy: ', err));
+                .catch(err => console.error('Failed to copy:', err));
         }
 
         function goToUrl(button) {
@@ -123,27 +120,40 @@
                 value: row.querySelector('input:not(.note-input)').value,
                 note: row.querySelector('.note-input').value
             }));
+            
             const blob = new Blob([JSON.stringify(state)], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
+            
             const a = document.createElement('a');
             a.href = url;
             a.download = 'copy-go-state.json';
+            
             a.click();
+            
             URL.revokeObjectURL(url);
         }
 
         function loadState() {
             const input = document.createElement('input');
+            
             input.type = 'file';
+            
             input.accept = '.json';
+            
             input.onchange = e => {
                 const file = e.target.files[0];
+                
                 const reader = new FileReader();
+                
                 reader.onload = readerEvent => {
                     const content = readerEvent.target.result;
+
                     const state = JSON.parse(content);
+
                     const container = document.getElementById('rowContainer');
+
                     container.innerHTML = '';
+
                     state.forEach(item => {
                         const newRow = document.createElement('div');
                         newRow.className = 'row';
@@ -155,11 +165,14 @@
                         `;
                         container.appendChild(newRow);
                     });
-                }
+                };
+                
                 reader.readAsText(file);
-            }
-            input.click();
-        }
+                
+             };
+             
+             input.click();
+         }
     </script>
 </body>
 </html>
