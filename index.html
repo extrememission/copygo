@@ -11,25 +11,31 @@
             color: #ecf0f1;
             margin: 0;
             padding: 0;
-            display: flex; /* Flexbox for centering */
-            justify-content: center; /* Horizontally center */
-            align-items: center; /* Vertically center */
-            min-height: 100vh; /* Full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .container {
             display: flex;
-            flex-direction: column; /* Stack rows vertically */
+            flex-direction: column;
             gap: 10px;
             max-width: 800px;
         }
         .row {
             display: flex;
             gap: 10px;
-            align-items: center; /* Vertically align elements in a row */
+            align-items: center;
+        }
+        .buttons-container {
+            display: flex;
+            justify-content: center; /* Center buttons horizontally */
+            gap: 10px; /* Space between buttons */
+            width: 100%; /* Take full width to center effectively */
         }
         input[type="text"], .note-input {
-            flex: 1 1 auto; /* Inputs grow/shrink proportionally */
-            min-width: 150px; /* Minimum width for inputs */
+            flex: 1 1 auto;
+            min-width: 150px;
             padding: 10px;
             font-size: 16px;
             border: none;
@@ -38,7 +44,7 @@
             color: #ecf0f1;
         }
         button {
-            flex: 0 0 auto; /* Buttons don't grow/shrink */
+            flex: 0 0 auto;
             padding: 10px 15px;
             font-size: 16px;
             border: none;
@@ -74,9 +80,11 @@
             <input type="text" placeholder="Add a note" class="note-input">
         </div>
     </div>
-    <button id="addRow" onclick="addRow()">+</button>
-    <button id="saveState" onclick="saveState()">Save State</button>
-    <button id="loadState" onclick="loadState()">Load State</button>
+    <div class="buttons-container">
+        <button id="addRow" onclick="addRow()">+</button>
+        <button id="saveState" onclick="saveState()">Save State</button>
+        <button id="loadState" onclick="loadState()">Load State</button>
+    </div>
 
     <script>
         function copyToClipboard(button) {
