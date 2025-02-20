@@ -102,6 +102,15 @@
         .checkmark.visible {
             display: inline-block;
         }
+        .delete-btn {
+            background: none;
+            color: #e74c3c;
+            padding: 5px 10px;
+        }
+        .delete-btn:hover {
+            background: none;
+            color: #c0392b;
+        }
     </style>
 </head>
 <body>
@@ -114,6 +123,7 @@
                 <span class="checkmark">✔</span>
                 <button class="go-btn">Go</button>
                 <input type="text" placeholder="Add a note" class="note-input" aria-label="Input field for notes">
+                <button class="delete-btn">✕</button>
             </div>
         </div>
         <div class="buttons-container">
@@ -174,6 +184,9 @@
             }
 
             rowContainer.addEventListener("click", (event) => {
+                if (event.target.classList.contains("delete-btn")) {
+                    event.target.closest(".row").remove();
+                }
                 if (event.target.classList.contains("copy-btn")) {
                     const input = event.target.previousElementSibling;
                     const checkmark = event.target.nextElementSibling;
@@ -216,6 +229,7 @@
                     <span class="checkmark">✔</span>
                     <button class="go-btn">Go</button>
                     <input type="text" placeholder="Add a note" class="note-input" aria-label="Input field for notes">
+                    <button class="delete-btn">✕</button>
                 `;
                 rowContainer.appendChild(newRow);
             });
@@ -262,6 +276,7 @@
                                 <span class="checkmark">✔</span>
                                 <button class="go-btn">Go</button>
                                 <input type="text" value="${item.note}" placeholder="Add a note" class="note-input" aria-label="Input field for notes">
+                                <button class="delete-btn">✕</button>
                             `;
                             rowContainer.appendChild(newRow);
                         });
